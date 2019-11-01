@@ -79,7 +79,7 @@ int StringParserClass::getDataBetweenTags(char *pDataToSearchThru, std::vector<s
 	char *startET = pDataToSearchThru;
 	char *endET = pDataToSearchThru + pDTSSize;
 
-	std::string toAdd = "";
+	string add = "";
 
 	while (findTag(pStartTag, pDataToSearchThru, endST) == SUCCESS){
 		if(findTag(pEndTag, startET, endET) == FAIL){
@@ -87,11 +87,11 @@ int StringParserClass::getDataBetweenTags(char *pDataToSearchThru, std::vector<s
 		}
 		if(findTag(pEndTag, startET, endET) == SUCCESS){
 			while (endST != startET){
-				toAdd += *endST;
+				add += *endST;
 				endST++;
 			}
-			myVector.push_back(toAdd);
-			toAdd = "";
+			myVector.push_back(add);
+			add = "";
 			pDataToSearchThru = endET;
 			pDTSSize = strlen(pDataToSearchThru);
 			endST = pDataToSearchThru + pDTSSize;
