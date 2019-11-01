@@ -74,30 +74,30 @@ int StringParserClass::getDataBetweenTags(char *pDataToSearchThru, std::vector<s
 	}
 
 	int pDTSSize = strlen(pDataToSearchThru);
-	char *DTS = pDataToSearchThru;
-	char *SDTSS = pDataToSearchThru + pDTSSize;
-	char *pDTS = pDataToSearchThru;
-	char *pSDTSS = pDataToSearchThru + pDTSSize;
+	char *startST = pDataToSearchThru;
+	char *endST = pDataToSearchThru + pDTSSize;
+	char *startET = pDataToSearchThru;
+	char *endET = pDataToSearchThru + pDTSSize;
 
 	std::string toAdd = "";
 
-	while (findTag(pStartTag, pDataToSearchThru, SDTSS) == SUCCESS){
-		if(findTag(pEndTag, pDTS, pSDTSS) == FAIL){
+	while (findTag(pStartTag, pDataToSearchThru, endST) == SUCCESS){
+		if(findTag(pEndTag, startET, endET) == FAIL){
 			return SUCCESS;
 		}
-		if(findTag(pEndTag, pDTS, pSDTSS) == SUCCESS){
-			while (SDTSS != pDTS){
-				toAdd += *SDTSS;
-				SDTSS++;
+		if(findTag(pEndTag, startET, endET) == SUCCESS){
+			while (endST != startET){
+				toAdd += *endST;
+				endST++;
 			}
 			myVector.push_back(toAdd);
 			toAdd = "";
-			pDataToSearchThru = pSDTSS;
+			pDataToSearchThru = endET;
 			pDTSSize = strlen(pDataToSearchThru);
-			SDTSS = pDataToSearchThru + pDTSSize;
-			pSDTSS = pDataToSearchThru + pDTSSize;
-			pDTS = pDataToSearchThru;
-			DTS = pDataToSearchThru;
+			endST = pDataToSearchThru + pDTSSize;
+			endET = pDataToSearchThru + pDTSSize;
+			startET = pDataToSearchThru;
+			startST = pDataToSearchThru;
 		}
 	}
 
@@ -107,11 +107,9 @@ int StringParserClass::getDataBetweenTags(char *pDataToSearchThru, std::vector<s
 void StringParserClass::cleanup(){
 	if(pStartTag) {
 		delete[] (pStartTag);
-//		pStartTag = 0;
 	}
 	if(pEndTag) {
 		delete[] (pStartTag);
-//		pEndTag = 0;
 	}
 
 }
