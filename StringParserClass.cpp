@@ -10,8 +10,8 @@
 #include "../327_proj3_test/includes/StringParserClass.h"
 #include "../327_proj3_test/includes/constants.h"
 
+using namespace std;
 using namespace KP_StringParserClass;
-
 
 char *pStartTag;
 char *pEndTag;
@@ -28,6 +28,7 @@ StringParserClass::StringParserClass(void)
 
 StringParserClass::~StringParserClass(void){
 	cleanup();
+	areTagsSet = false;
 }
 
 //these are the start tag and the end tags that we want to find,
@@ -39,16 +40,18 @@ StringParserClass::~StringParserClass(void){
 		//ERROR_TAGS_NULL if either pStart or pEnd is null
 int setTags(const char *pStart, const char *pEnd)
 {
-//	if (pStart == NULL || pEnd == NULL)
-//		return ERROR_TAGS_NULL;
-//
-//	int lenstart = strlen(pStart) + 1;
-//	int lenend = strlen(pEnd)+1;
-//
-//	pStartTag = new char(lenstart);
-//	strncpy(pStartTag, pStart, lenStart);
-//	pEndTag = new char(lenend);
-//	strncpy(pEndTag, pEnd, lenend);
+	if (pStart == NULL || pEnd == NULL)
+		return ERROR_TAGS_NULL;
+
+	int lenstart = strlen(pStart) + 1;
+	int lenend = strlen(pEnd) + 1;
+
+	pStartTag = new char[lenstart];
+	pEndTag = new char[lenend];
+	strncpy(pStartTag, pStart, lenstart);
+	strncpy(pEndTag, pEnd, lenend);
+
+	areTagsSet = true;
 
 	return SUCCESS;
 }
@@ -62,30 +65,52 @@ int setTags(const char *pStart, const char *pEnd)
 		//ERROR_DATA_NULL pDataToSearchThru is null
 int getDataBetweenTags(char *pDataToSearchThru,std::vector<std::string> &myVector)
 {
-//	if (pDataToSearchThru == NULL)
-//		return ERROR_DATA_NULL;
-//	if (pStartTag == NULL || pEndTag == NULL)
-//		return ERROR_TAGS_NULL;
-//
-//	int len = strlen(pDataToSearchThru);
-//
-//	for(int i = 0; i < len; i++){
-//		if(*(pDataToSearchThru +i) == *pStartTag){
-//			for(int j = i; j <= len; j++){
-//				if(*(pDataToSearchThru +j) == *pEndTag && strncmp((pDataToSearchThru +j), pEndTag, len)){
-//					break;
-//				}
-//					myVector.push_back(pDataToSearchThru +j);
-//			}
-//		}
+	myVector.clear();
+	if (areTagsSet == false){
+		return ERROR_TAGS_NULL;
+	}
+
+	if (pDataToSearchThru == NULL)
+		return ERROR_DATA_NULL;
+
+	int pDataSearchsize = strlen(pDataToSearchThru);
+	char *pST = pDataToSearchThru;
+	char *pSTS = pDataToSearchThru + pDataSearchsize;
+	char *ST = pDataToSearchThru;
+	char *STS = pDataToSearchThru + pDataSearchsize;
+
+	string add = "";
+
+//	while(findTag(pStartTag, pDataToSearchThru, pSTS) == SUCCESS){
+//		if(findTag(pEndTag, ST, STS) == SUCCESS)
+//			return SUCCESS;
 //	}
+//	if(findTag(pEndTag, ST, STS) == SUCCESS){
+//		while (pSTS != ST){
+//			add += *pSTS;
+//			pSTS++;
+//		}
+	myVector.push_back(add);
+	add = "";
+	pDataSearchsize = strlen(pDataToSearchThru);
+	pST = pDataToSearchThru;
+	pSTS = pDataToSearchThru + pDataSearchsize;
+	ST = pDataToSearchThru;
+	STS = pDataToSearchThru + pDataSearchsize;
+
 	return SUCCESS;
 }
 
-
 void cleanup()
 {
-	return SUCCESS;
+	if(pStartTag){
+		delete[](pStartTag);
+		pStartTag = 0;
+	}
+	if(pEndTag){
+		delete[](pStartTag);
+		pEndTag = 0;
+	}
 
 }
 
@@ -96,9 +121,20 @@ void cleanup()
 		//ERROR_TAGS_NULL if either pStart or pEnd is null
 int findTag(char *pTagToLookFor, char *&pStart, char *&pEnd)
 {
-//	if (pStart == NULL || pEnd == NULL)
-//		return ERROR_TAGS_NULL;
+	if (pStart == NULL || pEnd == NULL)
+		return ERROR_TAGS_NULL;
 
-	return SUCCESS;
+	int arraylen = strlen(pTagToLookFor);
+
+	while(pStart != pEnd){
+		if(*pStart == *pTagToLookFor){
+			if(strncmp(pStart, pTagToLookFor, arraylen) == 0){
+				pEnd = pStart + arraylen;
+				return SUCCESS;
+			}
+		}
+		pStart++;
+	}
+	return FAIL;
 }
 
